@@ -13,9 +13,33 @@ namespace MyToDo.Controllers
             _logger = logger;
         }
 
+        public string Sample(string name)
+        {
+            return $"Hello {name}!";
+        }
+
         public IActionResult Index()
         {
-            return View();
+            User sFirstUser = new User();
+            sFirstUser.No = 1;
+            sFirstUser.Name = "Tom";
+
+            //User m_sSecondUser = new User()
+            //{
+            //    No = 2,
+            //    Name = "Jane",
+            //};
+
+            // 첫번째 방법
+            return View(sFirstUser);
+
+            // 두번째 방법
+            // ViewBag
+            //ViewBag.User = sFirstUser; 
+
+            // 세번째 방법
+            //ViewData["user"] = sFirstUser;
+            //return View();
         }
 
         public IActionResult Privacy()
