@@ -21,8 +21,8 @@ namespace MyToDo.Controllers
         public IActionResult Index()
         {
             User sFirstUser = new User();
-            sFirstUser.No = 1;
-            sFirstUser.Name = "Tom";
+            sFirstUser.Id = 1;
+            sFirstUser.Username = "Tom";
 
             //User m_sSecondUser = new User()
             //{
