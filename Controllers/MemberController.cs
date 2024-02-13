@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using MyToDo.Models;
 using MyToDo.Models.DTO;
+using Newtonsoft.Json;
 
 namespace MyToDo.Controllers
 {
@@ -14,9 +16,12 @@ namespace MyToDo.Controllers
     {
         private readonly MyToDoContext _context;
 
-        public MemberController(MyToDoContext context)
+        private readonly ILogger<HomeController> _logger;
+
+        public MemberController(MyToDoContext context, ILogger<HomeController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Login()
@@ -29,18 +34,26 @@ namespace MyToDo.Controllers
         {
             if (loginDTO.Username == null || loginDTO.Password == null || _context.Users == null)
             {
-                return NotFound();
+                ViewBag.Message = "Please input your info";
+                return View(loginDTO);
             }
-            var user = _context.Users.FirstOrDefaultAsync(user => user.Username == loginDTO.Username && user.Password == loginDTO.Password);
-            if (user == null)
+            //var user = _context.Users.Select(user => user.Username == loginDTO.Username && user.Password == loginDTO.Password).ToList();
+            var result = (from user in _context.Users where (user.Username == loginDTO.Username && user.Password == loginDTO.Password) select user).ToList();
+         
+            if (!result.Any()) // 값이 비어있는지 확인 (== isNotEmpty)
             {
-                return NotFound();
+                ViewBag.Message = "Not correct your id or password. Please try again!";
+                return View(loginDTO);
+            } 
+            else
+            {
+                // see : https://learn.microsoft.com/ko-kr/aspnet/mvc/overview/older-versions-1/controllers-and-routing/aspnet-mvc-controllers-overview-cs
+                // return Content("Login Success"); // View를 반환하지 않고 텍스트를 반환
+                // 다른 컨트롤러의 액션으로 리다이렉션하면서 데이터 전달
+                // return RedirectToAction("OtherAction", "OtherController", new { id = 123 });
+                TempData["LoginUser"] = JsonConvert.SerializeObject(result[0]);
+                return RedirectToAction(actionName: "Index", controllerName: "ToDo");
             }
-            // see : https://learn.microsoft.com/ko-kr/aspnet/mvc/overview/older-versions-1/controllers-and-routing/aspnet-mvc-controllers-overview-cs
-            // return Content("Login Success"); // View를 반환하지 않고 텍스트를 반환
-            // 다른 컨트롤러의 액션으로 리다이렉션하면서 데이터 전달
-            // return RedirectToAction("OtherAction", "OtherController", new { id = 123 });
-            return RedirectToAction(actionName: "Index", controllerName: "ToDo");
         }
 
         // GET: Member

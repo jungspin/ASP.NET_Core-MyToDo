@@ -1,16 +1,16 @@
 @model IEnumerable<MyToDo.Models.ToDo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "ToDo";
 }
 
-<h1>Index</h1>
+<h1>@(ViewBag.LoginUsername)의 할일 목록</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-id="@(ViewBag.LoginUserId)">Create New</a>
 </p>
 <table class="table">
-    <thead>
+@*     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Content)
@@ -29,29 +29,26 @@
             </th>
             <th></th>
         </tr>
-    </thead>
+    </thead> *@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
             @if (item.IsDone == 0)
             {
-                <td>false</td>
+                    <td><input type="checkbox"></td>
             }
             else
             {
-                <td>true</td>
+                    <td><input type="checkbox" checked></td>
             }
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Username)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

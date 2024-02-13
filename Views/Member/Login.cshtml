@@ -1,7 +1,7 @@
-﻿@model MyToDo.Models.User
+﻿@model MyToDo.Models.DTO.LoginDTO
 
 @{
-    Layout = null;
+    Layout = "_LoginLayout";
     ViewData["Title"] = "로그인";
 }
 
@@ -25,10 +25,19 @@
             <div class="form-group">
                 <input type="submit" value="로그인" class="btn btn-primary" />
             </div>
+            @if (ViewBag.Message != null)
+            {
+                <script type="text/javascript">
+                    window.onload = function () {
+                        alert("@ViewBag.Message");
+                    };
+                </script>
+            }
         </form>
     </div>
 </div>
-
+<br />
+<br />
 <div>
     <a asp-action="Create">회원가입</a>
 </div>

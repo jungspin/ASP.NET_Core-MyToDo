@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyToDo.Models;
+using MyToDo.Models.DTO;
+using Newtonsoft.Json;
 
 namespace MyToDo.Controllers
 {
@@ -21,6 +23,15 @@ namespace MyToDo.Controllers
         // GET: ToDo
         public async Task<IActionResult> Index()
         {
+            var loginUser = JsonConvert.DeserializeObject<User>(TempData["LoginUser"].ToString());
+            TempData.Keep();
+            if (loginUser == null)
+            {
+                return BadRequest();
+            }
+
+            ViewBag.LoginUsername = loginUser.Username;
+            ViewBag.LoginUserId = loginUser.Id;
             var myToDoContext = _context.ToDos.Include(t => t.User);
             return View(await myToDoContext.ToListAsync());
         }
@@ -44,10 +55,18 @@ namespace MyToDo.Controllers
             return View(toDo);
         }
 
-        // GET: ToDo/Create
+        // GET: ToDo/Create/{id: int}
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            var loginUser = JsonConvert.DeserializeObject<User>(TempData["LoginUser"].ToString());
+            TempData.Keep();
+            if (loginUser == null)
+            {
+                return BadRequest();
+            }
+
+            ViewBag.LoginUsername = loginUser.Username;
+            ViewBag.LoginUserId = loginUser.Id;
             return View();
         }
 
@@ -56,16 +75,24 @@ namespace MyToDo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Content,IsDone,Created,Updated")] ToDo toDo)
+        public async Task<IActionResult> Create([Bind("UserId, Content")] ToDoDTO toDoDTO)
         {
             if (ModelState.IsValid)
             {
+                ToDo toDo = new ToDo()
+                {
+                    UserId = toDoDTO.UserId,
+                    Content = toDoDTO.Content,
+                    IsDone = 0,
+                    Created = DateTime.Now,
+                    Updated = DateTime.Now,
+                };
                 _context.Add(toDo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", toDo.UserId);
-            return View(toDo);
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", toDo.UserId);
+            return RedirectToAction(actionName: "Index");
         }
 
         // GET: ToDo/Edit/5
