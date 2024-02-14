@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyToDo.Models;
+using MyToDo.Models.DTO;
 using System.Diagnostics;
 
 namespace MyToDo.Controllers
@@ -11,6 +12,7 @@ namespace MyToDo.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+
         }
 
         public string Sample(string name)

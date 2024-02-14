@@ -10,7 +10,8 @@ namespace MyToDo.Models
     /// </summary>
     public class ToDo 
 	{
-		public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         [Column("user_id")]
         public int UserId { get; set; }
 		public string Content { get; set; }

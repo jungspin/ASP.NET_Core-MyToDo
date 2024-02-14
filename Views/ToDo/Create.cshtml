@@ -1,12 +1,12 @@
 @model MyToDo.Models.DTO.ToDoDTO 
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "할일 만들기";
 }
 
-<h1>Create</h1>
+<h1>할일 만들기</h1>
 
-<h4>ToDo</h4>
+<h4>할일</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,19 +14,30 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" disabled placeholder="@(ViewBag.LoginUsername)"/> 
+                <input class="form-control" disabled placeholder="@(ViewBag.LoginUsername)"/> 
+                <input asp-for="UserId" class="form-control" hidden value="@(ViewBag.LoginUserId)" />
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                @if (ViewBag.Message != null)
+                {
+                    <script type="text/javascript">
+                        window.onload = function () {
+                            alert("@ViewBag.Message");
+                        };
+                    </script>
+                }
             </div>
         </form>
     </div>
 </div>
+<br />
 
 <div>
     <a asp-action="Index">Back to List</a>

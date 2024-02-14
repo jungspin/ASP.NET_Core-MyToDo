@@ -4,10 +4,10 @@
     ViewData["Title"] = "ToDo";
 }
 
-<h1>@(ViewBag.LoginUsername)의 할일 목록</h1>
+<h1>@(ViewBag.HeaderTitle)</h1>
 
 <p>
-    <a asp-action="Create" asp-route-id="@(ViewBag.LoginUserId)">Create New</a>
+    <a asp-action="Create">할일 만들기</a>
 </p>
 <table class="table">
 @*     <thead>
